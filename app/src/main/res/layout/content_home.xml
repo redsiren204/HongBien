@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.goshu.hongbien.HomeActivity"
+    tools:showIn="@layout/app_bar_home">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageContent"
+        android:layout_gravity="top"
+        android:layout_margin="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
+        android:padding="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="0dp"
+        android:scaleType="center"
+        android:foregroundGravity="top|fill_horizontal" />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/imageContent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+    </GridLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_above="@+id/btnGroup"
+        android:background="#cecece">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnGroup"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/btnLike"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:text="Like"
+            android:drawableLeft="@drawable/ic_home_like"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:background="#dadada"
+            android:textAlignment="center" />
+        <Button
+            android:id="@+id/btnComment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Comment"
+            android:paddingLeft="16dp"
+            android:drawableLeft="@drawable/ic_home_comment"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="#dadada"
+            android:textAlignment="center" />
+        <Button
+            android:id="@+id/btnShare"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Share"
+            android:paddingLeft="16dp"
+            android:drawableLeft="@drawable/ic_home_share"
+            android:layout_gravity="right"
+            android:layout_weight="1"
+            android:background="#dadada"
+            android:textAlignment="center" />
+    </LinearLayout>
+</RelativeLayout>
