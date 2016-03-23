@@ -2,17 +2,15 @@ package com.goshu.hongbien;
 
 import android.app.Activity;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.ProgressDialog;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -21,6 +19,7 @@ import android.util.Base64InputStream;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,57 +31,13 @@ import com.goshu.hongbien.ommodel.OmModelRequest;
 import com.goshu.hongbien.ommodel.OmModelWorker;
 
 import com.google.common.io.Closeables;
-import com.goshu.hongbien.service.ServiceHandler;
+import com.goshu.hongbien.service.JSONParser;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class BenchmarkActivity extends Activity {
-
-    private ProgressDialog pDialog;
-
-    // URL to get JSON data
-    private static String url = "http://api.beat.vn/api/post/api_get_posts_by_category_id/37";
-
-    // JSOn node names
-    private static final String TAG_POST_ID = "post_id";
-    private static final String TAG_CONTENT = "content";
-    private static final String TAG_ATTACHMENTS = "attachments";
-    private static final String TAG_CREATED = "created";
-    private static final String TAG_UPDATED = "updated";
-    private static final String TAG_STATUS = "status";
-    private static final String TAG_VIEWED = "viewed";
-    private static final String TAG_LIKED = "liked";
-    private static final String TAG_UNlIKED = "unliked";
-    private static final String TAG_COMMENTED = "commented";
-    private static final String TAG_CATEGORY_ID = "category_id";
-    private static final String TAG_USER_ID = "user_id";
-    private static final String TAG_IS_ANONYMOUS = "is_anonymous";
-    private static final String TAG_SHARED = "shared";
-    private static final String TAG_IS_TOP = "is_top";
-    private static final String TAG_IS_GHIM = "is_ghim";
-    private static final String TAG_TOP_LIKE = "top_like";
-    private static final String TAG_CATEGORY_NAME = "category_name";
-    private static final String TAG_CATEGORY_SLUG = "category_slug";
-    private static final String TAG_CATEGORY_PARENT_SLUG = "category_parent_slug";
-    private static final String TAG_USERNAME = "username";
-    private static final String TAG_DISPLAY_NAME = "display_name";
-    private static final String TAG_AVATAR = "avatar";
-    private static final String TAG_IS_LIKED = "is_liked";
-    private static final String TAG_IS_SHARED = "is_shared";
-
-    JSONArray posts = null;
-
-    ArrayList<HashMap<String, String>> postList;
-
-    String tmpStr = "";
 
     private String mJsonString;
     private String mJsonString2;
@@ -92,25 +47,15 @@ public class BenchmarkActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        // check if you are connected or not
-//        if (isConnected()) {
-//            ((TextView) findViewById(R.id.results)).setText("You are connected");
-//        } else {
-//            ((TextView) findViewById(R.id.results)).setText("You are NOT connected");
-//        }
+        new HttpGetJsonAsync().execute();
 
         try {
             mJsonString = loadFromFileBase64(R.raw.input);
             mJsonString2 = loadFromFileJson(R.raw.jsondata);
         } catch (IOException e) {
-            Toast.makeText(this, "IOException", Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(this, "IOException", Toast.LENGTH_LONG).show();
             return;
         }
-
-        // Calling async task to get json data
-        new GetPosts().execute();
-//        new HttpAsyncTask().execute(url);
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -175,75 +120,117 @@ public class BenchmarkActivity extends Activity {
         });
     }
 
-    private class GetPosts extends AsyncTask<Void, Void, Void> {
+    class HttpPostJsonAsync extends AsyncTask<String, String, JSONObject> {
+        JSONParser jsonParser = new JSONParser();
+
+        private ProgressDialog pDialog;
+
+        private static final String myUrl = "http://hmkcode.appspot.com/rest/controller/get.json";
+
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-            // Showing progress dialog
             pDialog = new ProgressDialog(BenchmarkActivity.this);
-            pDialog.setMessage("Please wait...");
-            pDialog.setCancelable(false);
+            pDialog.setMessage("Attempting post JSON data...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
             pDialog.show();
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
-            // Creating service handler class instance
-            ServiceHandler sh = new ServiceHandler();
-            // Making a request to url and getting response
-            JSONObject jsonObj = sh.makeServiceCall(url, ServiceHandler.POST, null);
+        protected JSONObject doInBackground(String... args) {
+            try {
+                HashMap<String, String> params = new HashMap<>();
 
-                try {
-                    // Getting JSON Array node
-                    posts = jsonObj.getJSONArray("data");
+                Log.d("Request", "starting");
 
-                    // looping through all posts
-                    for (int i = 0; i < posts.length(); i++) {
-                        JSONObject c = posts.getJSONObject(i);
+                JSONObject jsonObj = jsonParser.makeHttpRequest(myUrl, JSONParser.POST, params);
 
-                        int postId = c.getInt(TAG_POST_ID);
-                        String content = c.getString(TAG_CONTENT);
-                        JSONArray attachments = c.getJSONArray(TAG_ATTACHMENTS);
-                        String categoryName = c.getString(TAG_CATEGORY_NAME);
-                        String displayName = c.getString(TAG_DISPLAY_NAME);
-                        String avatar = c.getString(TAG_AVATAR);
-
-                        tmpStr += "Post ID: " + postId + "\n" +
-                                "Content: " + content + "\n" +
-                                "Category Name: " + categoryName + "\n" +
-                                "Display Name: " + displayName  + "\n" +
-                                "Avatar: " + avatar + "\n";
-
-
-                        // Tmp hashmap for single post
-                        HashMap<String, String> postList = new HashMap<String, String>();
-
-                        // adding each child node to HashMap key => value
-                        postList.put(TAG_POST_ID, String.valueOf(postId));
-                        postList.put(TAG_CONTENT, content);
-                        postList.put(TAG_CATEGORY_NAME, categoryName);
-                        postList.put(TAG_DISPLAY_NAME, displayName);
-                        postList.put(TAG_AVATAR, avatar);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (jsonObj != null) {
+                    Log.d("JSON result", jsonObj.toString());
+                    return jsonObj;
                 }
-
+            } catch (Exception e) {
+                Log.e("Exception", e.getStackTrace().toString());
+            }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            // Dismiss the progress dialog
-            if (pDialog.isShowing()) {
+        protected void onPostExecute(JSONObject jsonObj) {
+
+            if (pDialog != null && pDialog.isShowing()) {
                 pDialog.dismiss();
             }
-            /**
-             * Updateing parsed JSON data into View
-             */
-            ((TextView) findViewById(R.id.shows)).setText(tmpStr);
+
+            if (jsonObj != null) {
+                Toast.makeText(BenchmarkActivity.this, jsonObj.toString(), Toast.LENGTH_LONG).show();
+                try {
+                    JSONArray articleList = jsonObj.getJSONArray("articleList");
+                } catch (JSONException e) {
+                    Log.e("JSON Error", e.getStackTrace().toString());
+                }
+            }
         }
+    }
+
+    class HttpGetJsonAsync extends AsyncTask<String, String, JSONObject> {
+        JSONParser jsonParser = new JSONParser();
+
+        private ProgressDialog pDialog;
+
+        private static final String myUrl = "http://hmkcode.appspot.com/rest/controller/get.json";
+
+        @Override
+        protected void onPreExecute() {
+            pDialog = new ProgressDialog(BenchmarkActivity.this);
+            pDialog.setMessage("Attempting get JSON data...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... args) {
+            try {
+                HashMap<String, String> params = new HashMap<>();
+
+                Log.d("Request", "starting");
+
+                JSONObject jsonObj = jsonParser.makeHttpRequest(myUrl, JSONParser.GET, params);
+
+                if (jsonObj != null) {
+                    Log.d("JSON result", jsonObj.toString());
+                    return jsonObj;
+                }
+            } catch (Exception e) {
+                Log.e("Exception", e.getStackTrace().toString());
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(JSONObject jsonObj) {
+            if (pDialog != null && pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
+
+            if (jsonObj != null) {
+                Toast.makeText(BenchmarkActivity.this, jsonObj.toString(), Toast.LENGTH_LONG).show();
+                String res = "";
+                try {
+                    JSONArray articleList = jsonObj.getJSONArray("articleList");
+                    for (int i=0; i < articleList.length(); i++) {
+                        JSONObject tmpObj = articleList.getJSONObject(i);
+                        res += "TITLE: " + tmpObj.getString("title") + "\n"
+                                + "URL: " + tmpObj.getString("url") + "\n";
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                ((TextView) findViewById(R.id.shows)).setText(res);
+            }
+        }
+
     }
 
     private String generateInputString(int iterations, String mJsonString) {
@@ -251,7 +238,7 @@ public class BenchmarkActivity extends Activity {
 
         sb.append("{\"list\": [");
 
-        for (int ix = 0; ix < iterations; ix ++) {
+        for (int ix = 0; ix < iterations; ix++) {
             if (ix != 0) {
                 sb.append(",");
             }
@@ -288,7 +275,7 @@ public class BenchmarkActivity extends Activity {
     }
 
     String loadFromFileJson(int resourceId) throws IOException {
-        InputStream inputStream = getResources().openRawResource(R.raw.jsondata);
+        InputStream inputStream = getResources().openRawResource(resourceId);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         byte buf[] = new byte[1024];
@@ -300,71 +287,12 @@ public class BenchmarkActivity extends Activity {
             outputStream.close();
             inputStream.close();
         } catch (IOException e) {
-
+            Log.e("Read file error", e.getStackTrace().toString());
         }
         return outputStream.toString();
     }
 
     int getIterationCount() {
         return Integer.valueOf(((EditText) findViewById(R.id.iterations)).getText().toString());
-    }
-
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            return true;
-        }
-        return false;
-    }
-
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-
-            return getPosts(urls[0]);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
-            ((TextView) findViewById(R.id.shows)).setText(result);
-        }
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while ((line = bufferedReader.readLine()) != null) {
-            result += line;
-        }
-        inputStream.close();
-        return result;
-    }
-
-    public static String getPosts(String url) {
-        InputStream inputStream = null;
-        String result = "";
-        try {
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // convert inputstream to string
-            if (inputStream != null) {
-                result = convertInputStreamToString(inputStream);
-            } else {
-                result = "Did not work!";
-            }
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
-        }
-        return result;
     }
 }
