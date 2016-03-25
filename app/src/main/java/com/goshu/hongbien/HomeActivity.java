@@ -2,7 +2,10 @@ package com.goshu.hongbien;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,19 +14,20 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.goshu.hongbien.service.JSONParser;
+import com.xgc1986.parallaxPagerTransformer.ParallaxPagerTransformer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.support.v4.view.ViewPager;
 
-public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    // URL to get JSON data
-    private static String url = "http://hmkcode.appspot.com/rest/controller/get.json";
+    private Fragment verticalFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,23 +36,25 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        verticalFragment = new InfiniteVerticalFragment();
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, verticalFragment).commit();
     }
 
     @Override
@@ -56,9 +62,19 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (verticalFragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(verticalFragment).commit();
+            verticalFragment = null;
+            setTitle(R.string.app_name);
+        } else  {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
     }
 
     @Override
@@ -94,7 +110,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
-
+            Toast.makeText(this, "Scroll View", Toast.LENGTH_LONG).show();
+            Intent scrollingActivity = new Intent(HomeActivity.this, ScrollingActivity.class);
+            startActivity(scrollingActivity);
         } else if (id == R.id.nav_manage) {
             Toast.makeText(this, "Test JSON parser", Toast.LENGTH_LONG).show();
             Intent benchmarkActivity = new Intent(HomeActivity.this, BenchmarkActivity.class);

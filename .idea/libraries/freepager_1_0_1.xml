@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="freepager-1.0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/pro.alexzaitsev/freepager/1.0.1/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/pro.alexzaitsev/freepager/1.0.1/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pro.alexzaitsev/freepager/1.0.1/849a6e8c8b5bd221fcffba60925402b2e092d5fc/freepager-1.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

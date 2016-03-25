@@ -1,108 +1,94 @@
 package com.goshu.hongbien;
 
-import android.content.Context;
-import android.net.Uri;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PaperFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PaperFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 public class PaperFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PaperFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PaperFragment newInstance(String param1, String param2) {
-        PaperFragment fragment = new PaperFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-    public PaperFragment() {
-        // Required empty public constructor
-    }
+    private PaperAdapter mCatsAdapter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        super.onCreateView(inflater, container, savedInstanceState);
+
+        View v = inflater.inflate(R.layout.fragment_paper, container, false);
+        final ImageView image = (ImageView) v.findViewById(R.id.image);
+
+        image.setImageResource(getArguments().getInt("image"));
+        image.post(new Runnable() {
+            @Override
+            public void run() {
+                Matrix matrix = new Matrix();
+                matrix.reset();
+
+                float wv = image.getWidth();
+                float hv = image.getHeight();
+
+                float wi = image.getDrawable().getIntrinsicWidth();
+                float hi = image.getDrawable().getIntrinsicHeight();
+
+                float width = wv;
+                float height = hv;
+
+                if (wi / wv > hi / hv) {
+                    matrix.setScale(hv / hi, hv / hi);
+                    width = wi * hv / hi;
+                } else {
+                    matrix.setScale(wv / wi, wv / wi);
+                    height= hi * wv / wi;
+                }
+
+                matrix.preTranslate((wv - width) / 2, (hv - height) / 2);
+                image.setScaleType(ImageView.ScaleType.MATRIX);
+                image.setImageMatrix(matrix);
+            }
+        });
+
+
+        TextView text = (TextView)v.findViewById(R.id.name);
+        text.setText(getArguments().getString("name"));
+
+        TextView more = (TextView)v.findViewById(R.id.more);
+
+        more.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mCatsAdapter != null) {
+                    mCatsAdapter.remove(PaperFragment.this);
+                    mCatsAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+        });
+
+        more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCatsAdapter != null) {
+                    int select = (int) (Math.random() * 4);
+
+                    int[] resD = {R.mipmap.bg_nina, R.mipmap.bg_niju, R.mipmap.bg_yuki, R.mipmap.bg_kero};
+                    String[] resS = {"Nina", "Niju", "Yuki", "Kero"};
+
+                    PaperFragment newP = new PaperFragment();
+                    Bundle b = new Bundle();
+                    b.putInt("image", resD[select]);
+                    b.putString("name", resS[select]);
+                    newP.setArguments(b);
+                    mCatsAdapter.add(newP);
+                }
+            }
+        });
+        return v;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_paper, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public void setAdapter(PaperAdapter catsAdapter) {
+        mCatsAdapter = catsAdapter;
     }
 }

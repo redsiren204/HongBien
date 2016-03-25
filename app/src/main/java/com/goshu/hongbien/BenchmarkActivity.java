@@ -6,8 +6,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.ProgressDialog;
@@ -19,7 +17,6 @@ import android.util.Base64InputStream;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,19 +36,19 @@ import org.json.JSONObject;
 
 public class BenchmarkActivity extends Activity {
 
-    private String mJsonString;
-    private String mJsonString2;
+    private String mJsonStringBase64;
+    private String mJsonStringUTF8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_benchmark);
 
-        new HttpGetJsonAsync().execute();
+        new HttpGetJsonAsync().execute("articleList", "title", "url");
 
         try {
-            mJsonString = loadFromFileBase64(R.raw.input);
-            mJsonString2 = loadFromFileJson(R.raw.jsondata);
+            mJsonStringBase64 = loadFromFileBase64(R.raw.input);
+            mJsonStringUTF8 = loadFromFileJson(R.raw.jsondata);
         } catch (IOException e) {
             Toast.makeText(this, "IOException", Toast.LENGTH_LONG).show();
             return;
@@ -72,9 +69,9 @@ public class BenchmarkActivity extends Activity {
                     try {
                         bs.before();
                         if (useIgParser) {
-                            igModel = new IgModelWorker().parseFromString(mJsonString);
+                            igModel = new IgModelWorker().parseFromString(mJsonStringBase64);
                         } else if (useOmParser) {
-                            omModel = new OmModelWorker().parseFromString(mJsonString);
+                            omModel = new OmModelWorker().parseFromString(mJsonStringBase64);
                         }
                         bs.after();
                     } catch (IOException ex) {
@@ -83,8 +80,8 @@ public class BenchmarkActivity extends Activity {
                         return;
                     }
                 } else {
-                    String multiIterationInputString = generateInputString(iterations, mJsonString);
-                    String multiIterationInputString2 = generateInputString(iterations, mJsonString2);
+                    String multiIterationInputString = generateInputString(iterations, mJsonStringBase64);
+                    String multiIterationInputString2 = generateInputString(iterations, mJsonStringUTF8);
                     ((TextView) findViewById(R.id.shows)).setMovementMethod(new ScrollingMovementMethod());
                     ((TextView) findViewById(R.id.shows)).setText(multiIterationInputString2);
 
@@ -140,6 +137,9 @@ public class BenchmarkActivity extends Activity {
         protected JSONObject doInBackground(String... args) {
             try {
                 HashMap<String, String> params = new HashMap<>();
+                params.put("articleList", args[0]);
+                params.put("title", args[1]);
+                params.put("url", args[2]);
 
                 Log.d("Request", "starting");
 
@@ -193,6 +193,9 @@ public class BenchmarkActivity extends Activity {
         protected JSONObject doInBackground(String... args) {
             try {
                 HashMap<String, String> params = new HashMap<>();
+                params.put("articleList", args[0]);
+                params.put("title", args[1]);
+                params.put("url", args[2]);
 
                 Log.d("Request", "starting");
 
