@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import pro.alexzaitsev.freepager.library.view.infinite.InfiniteVerticalPager;
 import pro.alexzaitsev.freepager.library.view.infinite.ViewFactory;
@@ -25,10 +26,12 @@ public class InfiniteVerticalFragment extends Fragment implements ViewFactory {
 
     @Override
     public View makeView(int vertical, int horizontal) {
-        Button btn = new Button(getActivity());
-        btn.setText("Vertical " + vertical);
-        btn.setBackgroundColor(getResources().getColor(R.color.sample_bg));
-        View view = new View(getContext());
-        return btn;
+        FragmentContentView customizeView = new FragmentContentView(this.getContext());
+        Toast.makeText(this.getActivity(), "Index " + vertical, Toast.LENGTH_SHORT).show();
+        return customizeView;
+    }
+
+    public void updateView(int index) {
+
     }
 }

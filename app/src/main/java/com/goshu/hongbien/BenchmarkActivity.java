@@ -44,7 +44,8 @@ public class BenchmarkActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_benchmark);
 
-        new HttpGetJsonAsync().execute("articleList", "title", "url");
+//        new HttpGetJsonAsync().execute("articleList", "title", "url");
+        new HttpGetJsonAsync().execute();
 
         try {
             mJsonStringBase64 = loadFromFileBase64(R.raw.input);
@@ -137,9 +138,9 @@ public class BenchmarkActivity extends Activity {
         protected JSONObject doInBackground(String... args) {
             try {
                 HashMap<String, String> params = new HashMap<>();
-                params.put("articleList", args[0]);
-                params.put("title", args[1]);
-                params.put("url", args[2]);
+//                params.put("articleList", args[0]);
+//                params.put("title", args[1]);
+//                params.put("url", args[2]);
 
                 Log.d("Request", "starting");
 
@@ -193,9 +194,9 @@ public class BenchmarkActivity extends Activity {
         protected JSONObject doInBackground(String... args) {
             try {
                 HashMap<String, String> params = new HashMap<>();
-                params.put("articleList", args[0]);
-                params.put("title", args[1]);
-                params.put("url", args[2]);
+//                params.put("articleList", args[0]);
+//                params.put("title", args[1]);
+//                params.put("url", args[2]);
 
                 Log.d("Request", "starting");
 

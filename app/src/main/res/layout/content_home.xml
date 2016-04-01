@@ -1,99 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment"
-    android:name="com.goshu.hongbien.InfiniteVerticalFragment"
+    android:name="com.goshu.hongbien.HomeActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:layout="@layout/fragment_infinite_vertical">
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!--<RelativeLayout
-        android:id="@+id/content_home"
+    <LinearLayout
+        android:id="@+id/fragment_container"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="0dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp">
+        android:layout_height="match_parent">
+    </LinearLayout>
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageContent"
-            android:layout_gravity="top"
-            android:layout_margin="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="0dp"
-            android:padding="0dp"
-            android:paddingLeft="0dp"
-            android:paddingTop="0dp"
-            android:paddingRight="0dp"
-            android:paddingBottom="0dp"
-            android:paddingEnd="0dp"
-            android:paddingStart="0dp"
-            android:scaleType="center"
-            android:foregroundGravity="top|fill_horizontal" />
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/imageContent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
-
-        </GridLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_above="@+id/btnGroup"
-            android:background="#cecece">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/btnGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
-
-            <Button
-                android:id="@+id/btnLike"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:text="Like"
-                android:drawableLeft="@drawable/ic_home_like"
-                android:layout_weight="1"
-                android:background="#dadada" />
-            <Button
-                android:id="@+id/btnComment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Comment"
-                android:paddingLeft="0dp"
-                android:drawableLeft="@drawable/ic_home_comment"
-                android:layout_weight="1"
-                android:background="#dadada" />
-            <Button
-                android:id="@+id/btnShare"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Share"
-                android:paddingLeft="4dp"
-                android:drawableLeft="@drawable/ic_home_share"
-                android:layout_weight="1"
-                android:background="#dadada" />
-        </LinearLayout>
-    </RelativeLayout>-->
-</fragment>
+</RelativeLayout>
 

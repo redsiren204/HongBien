@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_content"
+        android:layout_gravity="top"
+        android:layout_margin="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
+        android:padding="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="0dp"
+        android:scaleType="center"
+        android:foregroundGravity="top|fill_horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/image_content"
+        android:layout_above="@+id/separate_line">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <ImageButton
+                android:id="@+id/ava_content"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:paddingEnd="0dp"
+                android:paddingStart="0dp"
+                android:layout_margin="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="0dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp">
+
+                <Button
+                    android:id="@+id/display_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Display name"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="0dp"
+                    android:paddingBottom="0dp"
+                    android:paddingEnd="0dp"
+                    android:paddingStart="0dp"
+                    android:background="@color/white"/>
+
+                <Button
+                    android:id="@+id/time_stamp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="10 phut truoc"
+                    android:textAllCaps="false"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="0dp"
+                    android:paddingBottom="0dp"
+                    android:paddingEnd="0dp"
+                    android:paddingStart="0dp"
+                    android:background="@color/white"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/text_margin"
+            android:id="@+id/message_content"
+            android:text="Vi du ve content"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/separate_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:orientation="horizontal"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_above="@+id/btn_group"
+        android:background="#cecece">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/btn_like"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:text="Like"
+            android:textAllCaps="false"
+            android:drawableLeft="@drawable/ic_home_like"
+            android:layout_weight="1"
+            android:background="#dadada" />
+        <Button
+            android:id="@+id/btn_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Comment"
+            android:textAllCaps="false"
+            android:paddingLeft="0dp"
+            android:drawableLeft="@drawable/ic_home_comment"
+            android:layout_weight="1"
+            android:background="#dadada" />
+        <Button
+            android:id="@+id/btn_share"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:textAllCaps="false"
+            android:paddingLeft="4dp"
+            android:drawableLeft="@drawable/ic_home_share"
+            android:layout_weight="1"
+            android:background="#dadada" />
+    </LinearLayout>
+</RelativeLayout>

@@ -11,6 +11,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/app_bar"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -22,8 +23,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--<include layout="@layout/content_home" />-->
-    <!--<include layout="@layout/fragment_infinite_vertical"/>-->
+    <include layout="@layout/content_home" />
 
     <!--<android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

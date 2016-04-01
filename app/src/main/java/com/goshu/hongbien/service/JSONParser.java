@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,6 +35,7 @@ public class JSONParser {
 
     static InputStream response = null;
     static JSONObject jsonObj = null;
+    static JSONArray jsonArr = null;
     static String jsonStr = "";
 
     static StringBuilder sbParams = null;
@@ -201,13 +203,15 @@ public class JSONParser {
             if (sbParams.length() != 0) {
                 url += "?" + sbParams.toString();
             }
-
+            Log.d("URL with params: ", url);
             try {
                 urlObj = new URL(url);
                 conn = (HttpURLConnection) urlObj.openConnection();
                 conn.setDoOutput(false);
+                conn.setDoInput(true);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Accepted-Charset", "utf-8");
+                conn.setRequestProperty("Accept-Charset", "utf-8");
+                conn.setReadTimeout(10000);
                 conn.setConnectTimeout(15000);
                 conn.connect();
             } catch (IOException e) {
@@ -225,7 +229,6 @@ public class JSONParser {
             while ((line = bfReader.readLine()) != null) {
                 results.append(line);
             }
-
             Log.d("JSON Parser", "result: " + results.toString());
         } catch (IOException e) {
             Log.e("Input Stream Error", e.getStackTrace().toString());
@@ -237,10 +240,91 @@ public class JSONParser {
         try {
             jsonObj = new JSONObject(results.toString());
         } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.getStackTrace().toString());
+            Log.e("JSON Parser", "Error Object " + e.getStackTrace().toString());
         }
 
         // Return JSON
         return jsonObj;
+    }
+
+    public JSONArray makeJSONArrHttpRequest(String url, int method, HashMap<String, String> params) {
+        sbParams = new StringBuilder();
+        int i = 0;
+        for (String key : params.keySet()) {
+            try {
+                if (i != 0) {
+                    sbParams.append("&");
+                }
+                sbParams.append(key).append("=").append(URLEncoder.encode(params.get(key), "utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                Log.e("Encoding Error", e.getStackTrace().toString());
+            }
+            i++;
+        }
+
+        if (method == POST) {
+            try {
+                urlObj = new URL(url);
+                conn = (HttpURLConnection) urlObj.openConnection();
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Accept-Charset", "utf-8");
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);
+                conn.connect();
+
+                paramsStr = sbParams.toString();
+                dos = new DataOutputStream(conn.getOutputStream());
+                dos.writeBytes(paramsStr);
+                dos.flush();
+                dos.close();
+            } catch (IOException e) {
+                Log.e("URL Error", e.getStackTrace().toString());
+            }
+        } else if (method == GET) {
+            if (sbParams.length() != 0) {
+                url += "?" + sbParams.toString();
+            }
+            Log.d("URL with params: ", url);
+            try {
+                urlObj = new URL(url);
+                conn = (HttpURLConnection) urlObj.openConnection();
+                conn.setDoOutput(false);
+                conn.setDoInput(true);
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Accept-Charset", "utf-8");
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);
+                conn.connect();
+            } catch (IOException e) {
+                Log.e("URL Error", e.getStackTrace().toString());
+            }
+        }
+
+        try {
+            // Receive the response from server
+            InputStream is = new BufferedInputStream(conn.getInputStream());
+            BufferedReader bfReader = new BufferedReader(new InputStreamReader(is));
+            results = new StringBuilder();
+            String line;
+
+            while ((line = bfReader.readLine()) != null) {
+                results.append(line);
+            }
+            Log.d("JSON Parser", "result: " + results.toString());
+        } catch (IOException e) {
+            Log.e("Input Stream Error", e.getStackTrace().toString());
+        }
+
+        conn.disconnect();
+        // Parse the string to JSON object
+        try {
+            jsonArr = new JSONArray(results.toString());
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error Array " + e.getStackTrace().toString());
+        }
+
+        // Return JSON
+        return jsonArr;
     }
 }
